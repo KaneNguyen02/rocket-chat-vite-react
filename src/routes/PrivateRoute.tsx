@@ -7,7 +7,7 @@ type PrivateRouteProps = {
 };
 
 export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  const isLogin = useAuth();
+  const { isLogin } = useAuth();
   const location = useLocation();
 
   if (!isLogin) {
