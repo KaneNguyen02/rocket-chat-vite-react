@@ -1,12 +1,13 @@
 import React, { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 type PrivateRouteProps = {
   children: ReactNode;
 };
 
 export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  const isLogin = true;
+  const isLogin = useAuth();
   const location = useLocation();
 
   if (!isLogin) {
