@@ -1,16 +1,16 @@
-= null) {
-      error('A component is `contentEditable` and contains `children` managed by ' + 'React. It is now your responsibility to guarantee that none of ' + 'those nodes are unexpectedly modified or duplicated. This is ' + 'probably not intentional.');
-    }
-
-    if (formatContext.insertionMode !== SVG_MODE && formatContext.insertionMode !== MATHML_MODE) {
-      if (type.indexOf('-') === -1 && type.toLowerCase() !== type) {
-        error('<%s /> is using incorrect casing. ' + 'Use PascalCase for React components, ' + 'or lowercase for HTML elements.', type);
-      }
-    }
-  }
-
-  switch (type) {
-    case 'div':
-    case 'span':
-    case 'svg':
-    cas
+diff --git a/.gitignore b/.gitignore
+deleted file mode 100644
+index ab6b7b51a942d4b916d8f1d8476ba8efc074d257..0000000000000000000000000000000000000000
+diff --git a/lib/drivers/ddp.ts b/lib/drivers/ddp.ts
+index 19d31aee3190d2f2cfeb504e73a7d2a3d8cde7fe..d71e7fab30491160750ba0a988ae30e4e087ebe6 100644
+--- a/lib/drivers/ddp.ts
++++ b/lib/drivers/ddp.ts
+@@ -95,7 +95,7 @@ export class Socket extends EventEmitter {
+       }
+ 
+       try {
+-        connection = new WebSocket(this.host, null, { headers: settings.customHeaders })
++        connection = new WebSocket(this.host)
+         connection.onerror = reject
+       } catch (err) {
+         this.logger.error(err)
