@@ -1,8 +1,10 @@
 import { Rocketchat } from '@rocket.chat/sdk';
+import { IMessage } from '../utils/constant';
 
 class SDK {
   sdk: Rocketchat
   currentUser: any
+  historyMessage: IMessage[]
 
   connect() {
     this.sdk = new Rocketchat({ 
@@ -27,7 +29,7 @@ class SDK {
     return this.sdk || null
   }
 
-  async login(credentials: { username: string; password: string }): Promise<unknown> {
+  async login(credentials: { username?: string; password?: string; resume?: string; }): Promise<unknown> {
 		const res =  await this.current.login(credentials);
     if (res.id && this.current?.currentLogin) {
       this.currentUser = { authToken: this.current?.currentLogin.authToken, ...this.current?.currentLogin?.result?.me }
@@ -35,8 +37,12 @@ class SDK {
     return res
 	}
 
+  async resume ({ token }: { token: string }) {
+    return await this.current.login({ token } as any, {})
+  }
+
 	methodCall(method: string, ...args: any[]) {
-		return this.sdk.callAsync(method, ...args);
+		return  this.current.callAsync(method, ...args);
 	}
 
 	subscribe(topic: string, ...args: any[]) {
@@ -45,9 +51,9 @@ class SDK {
 
 	subscribeRoom(rid: string): Promise<unknown> {
 		return Promise.all([
-			this.subscribe('room-messages', rid),
-			this.subscribe('notify-room', `${rid}/typing`),
-			this.subscribe('notify-room', `${rid}/deleteMessage`),
+			this.current.subscribe('room-messages', rid),
+			this.current.subscribe('notify-room', `${rid}/typing`),
+			this.current.subscribe('notify-room', `${rid}/deleteMessage`),
 		]);
 	}
 

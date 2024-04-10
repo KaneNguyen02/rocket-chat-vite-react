@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import StorageService from "../../utils/storage";
 import { sdk } from "../../services/SDK";
 
+
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -18,24 +19,16 @@ const Login: React.FC = () => {
     setPassword(e.target.value);
   };
 
-  useEffect(() => {
-    console.log("connected to socket login");
-
-   
-        if (!sdk.current) {
-          sdk.connect();
-          // subscribe room - message event
-        }
-  }, [sdk.current]);
-
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     const fetchData = async () => {
       setError("");
 
       try {
-        await sdk.login({ username, password });
-        StorageService.set("isLogin", true);
+        const res: any = await sdk.login({ username, password });
+        console.log("🚀 ~ fetchData ~ res:", res)
+        StorageService.set("token", res.token)
+        StorageService.set("id",res.id )
         navigate("/");
       } catch (error) {
         setError("Username or password invalid");

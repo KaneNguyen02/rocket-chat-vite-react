@@ -12,6 +12,7 @@
   "dependencies": {
     "@rocket.chat/sdk": "github:RocketChat/Rocket.Chat.js.SDK#mobile",
     "@tailwindui/react": "^0.1.1",
+    "@types/node": "^20.12.7",
     "autoprefixer": "^10.4.19",
     "axios": "^1.6.8",
     "react": "^18.2.0",
