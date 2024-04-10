@@ -1,7 +1,7 @@
-import React, { FormEvent, useState } from "react";
-import api from "../../api/axiosInstance";
+import React, { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StorageService from "../../utils/storage";
+import { sdk } from "../../services/SDK";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -18,19 +18,32 @@ const Login: React.FC = () => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (event: FormEvent) => {
+  useEffect(() => {
+    console.log("connected to socket login");
+
+    const connect = async () => {
+      try {
+        if (!sdk.current) {
+          sdk.connect();
+          // subscribe room - message event
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+
+    connect();
+  }, []);
+
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     const fetchData = async () => {
       setError("");
+
       try {
-        const res = await api.post(`/login`, { user: username, password });
-        if (res.status === 200) {
-          const { authToken, userId } = res.data.data;
-          StorageService.set("authToken", authToken);
-          StorageService.set("userId", userId);
-          StorageService.set("isLogin", true);
-          navigate("/");
-        }
+        await sdk.login({ username, password });
+        StorageService.set("isLogin", true);
+        navigate("/");
       } catch (error) {
         setError("Username or password invalid");
       }

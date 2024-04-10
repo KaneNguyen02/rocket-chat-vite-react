@@ -1,0 +1,16 @@
+= null) {
+      error('A component is `contentEditable` and contains `children` managed by ' + 'React. It is now your responsibility to guarantee that none of ' + 'those nodes are unexpectedly modified or duplicated. This is ' + 'probably not intentional.');
+    }
+
+    if (formatContext.insertionMode !== SVG_MODE && formatContext.insertionMode !== MATHML_MODE) {
+      if (type.indexOf('-') === -1 && type.toLowerCase() !== type) {
+        error('<%s /> is using incorrect casing. ' + 'Use PascalCase for React components, ' + 'or lowercase for HTML elements.', type);
+      }
+    }
+  }
+
+  switch (type) {
+    case 'div':
+    case 'span':
+    case 'svg':
+    cas

@@ -1,8 +1,11 @@
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
-import api from "../../api/axiosInstance";
+// import api, { API_HOST_URL } from "../../api/axiosInstance";
 import InputMessage from "../../components/InputMessage/InputMessage";
-import { socket } from "../../../socket";
 
+
+import { Rocketchat } from '@rocket.chat/sdk'
+import { SDK, sdk } from "../../services/SDK";
+import { log } from "console";
 interface IMessage {
   _id?: string;
   username: string;
@@ -21,6 +24,7 @@ const HomePage = () => {
   ]);
   const currentUser = localStorage.getItem("username") || "";
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
+  // const [messages, setMessages] = useState([]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -28,49 +32,70 @@ const HomePage = () => {
 
   useEffect(scrollToBottom, [newMessage]);
 
+
+  
+
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const listMessage = await api.get("/messages");
+  //     console.log("🚀 ~ useEffect ~ listMessage:", listMessage);
+  //     setNewMessage(listMessage.data.result);
+  //   };
+  //   fetchData();
+  // }, []);
+
+
   useEffect(() => {
-    const fetchData = async () => {
-      const listMessage = await api.get("/messages");
-      console.log("🚀 ~ useEffect ~ listMessage:", listMessage);
-      setNewMessage(listMessage.data.result);
-    };
-    fetchData();
+    const connect = async () => {
+      try {
+        console.log('sdk.current()', sdk);
+        
+        if (!sdk.current()) {
+          sdk.connect()
+
+          // subscribe room - message event
+        }
+      } catch (error) {
+      console.log('error', error);
+      }
+    }
+
+    connect()
   }, []);
+
+
+  // const  subscribeToGeneralRoom = async() => {
+  //   const roomId = 'GENERAL_ROOM_ID'; 
+  //   await this.subscribeRoom(roomId);
+  // }
+
+  // async listenToMessages() {
+  //   const roomName = 'general'; // Giả định đây là tên đúng của phòng
+  //   this.onStreamData(`stream-room-messages::${roomName}::new-message`, (message) => {
+  //     // Xử lý tin nhắn ở đây
+  //     // Làm gì đó với 'message'
+  //     console.log(message);
+  //   });
+  // }
 
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
     setInputMessage(e.target?.value);
   };
 
-  const emitMessage = () => {
-    socket.emit("message", {
-      username: currentUser,
-      message: inputMessage,
-    });
-    console.log("send");
 
-    setInputMessage("");
-  };
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      emitMessage();
+      // emitMessage();
     }
   };
 
   const handleSendMessage = () => {
-    emitMessage();
+    // emitMessage();
   };
 
-  useEffect(() => {
-    socket.off("message");
-    socket.on("message", (res: IMessage) => {
-      console.log(res);
-      setNewMessage((prev) => [...prev, res]);
-    });
-    // return () => {
-    //   socket.off("message");
-    // };
-  }, []);
+
 
   return (
     <div className="w-full h-full rounded-2xl bg-gray-100">
