@@ -51,10 +51,11 @@ const HomePage = () => {
       try {
         console.log('sdk.current()', sdk);
         
-        if (!sdk.current()) {
+        if (!sdk.current) {
           sdk.connect()
 
           // subscribe room - message event
+          subscribeToGeneralRoom()
         }
       } catch (error) {
       console.log('error', error);
@@ -65,10 +66,10 @@ const HomePage = () => {
   }, []);
 
 
-  // const  subscribeToGeneralRoom = async() => {
-  //   const roomId = 'GENERAL_ROOM_ID'; 
-  //   await this.subscribeRoom(roomId);
-  // }
+  const  subscribeToGeneralRoom = async() => {
+    const roomId = 'GENERAL'; 
+    await sdk.subscribeRoom(roomId);
+  }
 
   // async listenToMessages() {
   //   const roomName = 'general'; // Giả định đây là tên đúng của phòng

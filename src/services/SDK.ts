@@ -8,7 +8,7 @@ class SDK {
     this.sdk = new Rocketchat({ 
       host: 'https://wrapper.v2.d-soft.tech', 
       useSsl: true,
-      // protocol: 'ddp',
+      protocol: 'ddp',
       reopen: 20000 
     })
     return this.sdk
@@ -40,14 +40,14 @@ class SDK {
 	}
 
 	subscribe(topic: string, ...args: any[]) {
-		return this.sdk.subscribe(topic, ...args).ready();
+		return this.current.subscribe(topic, ...args).ready();
 	}
 
 	subscribeRoom(rid: string): Promise<unknown> {
 		return Promise.all([
-			this.subscribe('room-messages', rid, (...args) => this.ev.emit('message', args)),
-			this.subscribe('notify-room', `${rid}/typing`, (...args) => this.ev.emit('typing', args)),
-			this.subscribe('notify-room', `${rid}/deleteMessage`, (...args) => this.ev.emit('deleteMessage', args)),
+			this.subscribe('room-messages', rid),
+			this.subscribe('notify-room', `${rid}/typing`),
+			this.subscribe('notify-room', `${rid}/deleteMessage`),
 		]);
 	}
 

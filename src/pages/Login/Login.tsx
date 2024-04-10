@@ -21,19 +21,12 @@ const Login: React.FC = () => {
   useEffect(() => {
     console.log("connected to socket login");
 
-    const connect = async () => {
-      try {
+   
         if (!sdk.current) {
           sdk.connect();
           // subscribe room - message event
         }
-      } catch (error) {
-        console.log("error", error);
-      }
-    };
-
-    connect();
-  }, []);
+  }, [sdk.current]);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
