@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useState } from 'react'
-import { Navigate, useLocation } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import StorageService from '../utils/storage'
 import { sdk } from '../services/SDK'
 
@@ -9,32 +9,43 @@ type PrivateRouteProps = {
 
 export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const [isLogin, setIsLogin] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const token = StorageService.get('token')
+  const navigate = useNavigate()
 
   useEffect(() => {
-    console.log('connected to socket login')
-
-    if (!sdk.current) {
-      sdk.connect()
-      // subscribe room - message event
+    const connectSocket = async () => {
+      if (!sdk.current) {
+        console.log('connected to socket login')
+        await sdk.connect()
+        // subscribe room - message event
+      }
+      connectSocket()
     }
   }, [sdk.current, token, setIsLogin])
 
   useEffect(() => {
-    if (token && sdk.current) {
-      sdk.login({ resume: token }).then((data) => {
-        console.log('resume', data)
-        setIsLogin(true)
-      })
+    if (token && sdk.current && !isLoading) {
+      setIsLoading(true)
+      sdk
+        .login({ resume: token })
+        .then((data) => {
+          console.log('resume', data)
+          setIsLogin(true)
+          setIsLoading(false)
+        })
+        .catch((err: any) => {
+          console.log('err isLogin', isLogin)
+        })
     }
   }, [token, sdk.current, setIsLogin])
 
   const location = useLocation()
 
-  console.log("isLogin", isLogin);
-  
-  if (!isLogin) {
-    return <Navigate to='/sign-in' state={{ from: location.pathname }} replace /> // change 
+  if (!isLoading && !isLogin) {
+    console.log('isLogin >>>>>', isLogin)
+    // return navigate('/sign-in')
+
   }
   return children
 }
