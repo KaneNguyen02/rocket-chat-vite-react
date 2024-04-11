@@ -9,25 +9,20 @@ type PrivateRouteProps = {
 
 export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const [isLogin, setIsLogin] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const token = StorageService.get('token')
   const navigate = useNavigate()
 
   useEffect(() => {
-    const connectSocket = async () => {
-      if (!sdk.current) {
-        console.log('connected to socket login')
-        await sdk.connect()
-        // subscribe room - message event
-      }
-      connectSocket()
+    if (sdk.currentUser?._id) {
+      setIsLogin(true)
+      setIsLoading(false)
+      return
     }
-  }, [sdk.current, token, setIsLogin])
 
-  useEffect(() => {
-    if (token && sdk.current && !isLoading) {
+    if (token) {
       setIsLoading(true)
-      sdk
+      sdk.current && sdk
         .login({ resume: token })
         .then((data) => {
           console.log('resume', data)
@@ -35,16 +30,21 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
           setIsLoading(false)
         })
         .catch((err: any) => {
+          setIsLoading(false)
           console.log('err isLogin', isLogin)
+          navigate('/sign-in')
         })
+    } else {
+      setIsLoading(false)
+      navigate('/sign-in')
     }
-  }, [token, sdk.current, setIsLogin])
+  }, [token, sdk.current, sdk.currentUser, setIsLogin])
 
-  const location = useLocation()
+  if (isLoading) return <div>Loading...</div>
 
-  if (!isLoading && !isLogin) {
-    console.log('isLogin >>>>>', isLogin)
+  if (!isLogin) {
     // return navigate('/sign-in')
+    return <div>Loading...</div>
 
   }
   return children

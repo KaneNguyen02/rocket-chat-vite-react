@@ -7,6 +7,7 @@ import { IMessage } from '../../utils/constant'
 import StorageService from '../../utils/storage'
 import { fakeData } from '../../../data'
 import clsx from 'clsx'
+import { roomManager } from '../../utils/RoomManager'
 
 const HomePage = () => {
   const [inputMessage, setInputMessage] = useState('')
@@ -17,6 +18,8 @@ const HomePage = () => {
 
   const [activeHoverId, setActiveHoverId] = useState<string | null>(null)
   const [activeDropdownId, setActiveDropdownId] = useState<string | null>(null)
+  const [isEditMs, setIsEditMs] = useState<boolean>(false)
+  const [messageSelected, setMessageSelected] = useState<string | null>(null)
 
   const handleMouseEnter = (id: string) => {
     setActiveHoverId(id)
@@ -42,24 +45,6 @@ const HomePage = () => {
   useEffect(scrollToBottom, [listMessage])
 
   useEffect(() => {
-    const connect = async () => {
-      try {
-        // console.log("sdk.current()", sdk.current);
-
-        if (!sdk.current) {
-          sdk.connect()
-
-          // subscribe room - message event
-        }
-      } catch (error) {
-        console.log('error', error)
-      }
-    }
-
-    connect()
-  }, [])
-
-  useEffect(() => {
     const getHistory = async () => {
       // chua lam ham resume nen vao day moi co sdk.current co info login
       const generalRoomId = 'GENERAL'
@@ -75,30 +60,37 @@ const HomePage = () => {
 
   useEffect(() => {
     const subscribeRoom = async () => {
-      const roomId = 'GENERAL'
-      const subscription = await sdk.current.subscribeRoom(roomId)
-      console.log('🚀 ~ subscribeToGeneralRoom ~ messages:', subscription)
+      // const roomId = 'GENERAL'
 
-      // if (subscription) {
-      //   await sdk.current.onMessage((message: any) => {
-      //     console.log('Received new message:', message)
-      //   })
+      // console.log("🚀 ~ subscribeRoom ~ sdk.currentSubscription:", sdk.currentSubscription)
+      // if (sdk.currentSubscription?._id === roomId) {
+      //   console.log('subcribe---------')
+
       // }
 
-      await sdk.current.onStreamData(`stream-room-messages::${roomId}`, (message: any) => {
-        console.log('Tin nhắn mới:', message)
-      })
+      // sdk.current.onStreamData(`stream-room-messages`, (message: any) => {
+      //   console.log('Tin nhắn mới:', message)
+
+      //   const newMessage = message.fields.args[0]
+
+      //   setListMessage((prevMessages) => [...prevMessages, newMessage])
+      // })
+      roomManager.subscribe('GENERAL')
+     
     }
 
     subscribeRoom()
   }, [])
+
+
 
   const sendMessage = async (inputMessage: string) => {
     const res = await sdk.current.methodCall('sendMessage', {
       rid: 'GENERAL',
       msg: inputMessage
     })
-    setListMessage((prevMessage) => [...prevMessage, res])
+    console.log("🚀 ~ sendMessage ~ res:", res)
+    // setListMessage((prevMessage) => [...prevMessage, res])
     setInputMessage('')
   }
 
@@ -108,12 +100,38 @@ const HomePage = () => {
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
+      if (isEditMs) {
+        updateMessage(messageSelected, inputMessage)
+      } else {  
+        sendMessage(inputMessage)
+      }
+    }
+  }
+
+  const handleMessage = () => {
+    if (isEditMs) {
+      updateMessage(messageSelected, inputMessage)
+    } else {
       sendMessage(inputMessage)
     }
   }
 
-  const handleSendMessage = () => {
-    sendMessage(inputMessage)
+  const handleEditMessage = (mId: string, oldMessage: string) => {
+    setInputMessage(oldMessage)
+    setIsEditMs(true)
+    setMessageSelected(mId)
+  }
+
+  const updateMessage = (mId: string, newContent: string) => {
+    const updateMessage = sdk.editMessage(mId, newContent)
+    setMessageSelected(null)
+    setInputMessage('')
+    console.log('🚀 ~ updateMessage ~ updateMessage:', updateMessage)
+  }
+
+  const handleDeleteMessage = (mId: string) => {
+    const deleteMessage = sdk.deleteMessage(mId)
+    console.log('🚀 ~ handleDeleteMessage ~ deleteMessage:', deleteMessage)
   }
 
   return (
@@ -158,10 +176,16 @@ const HomePage = () => {
                         </button>
                         {activeDropdownId == item._id && (
                           <div className='absolute top-0 left-0 mt-8 bg-white border rounded-md shadow-md'>
-                            <button className='block px-2 py-1 w-full text-gray-800 hover:bg-gray-200 text-sm'>
+                            <button
+                              onClick={() => handleEditMessage(item._id, item.msg)}
+                              className='block px-2 py-1 w-full text-gray-800 hover:bg-gray-200 text-sm'
+                            >
                               Edit
                             </button>
-                            <button className='block px-2 py-1 w-full text-gray-800 hover:bg-gray-200 text-sm'>
+                            <button
+                              onClick={() => handleDeleteMessage(item._id)}
+                              className='block px-2 py-1 w-full text-gray-800 hover:bg-gray-200 text-sm'
+                            >
                               Delete
                             </button>
                           </div>
@@ -180,7 +204,7 @@ const HomePage = () => {
         inputMessage={inputMessage}
         handleChangeInput={handleChangeInput}
         onKeyDown={handleKeyPress}
-        handleSendMessage={handleSendMessage}
+        handleMessage={handleMessage}
       />
     </div>
   )

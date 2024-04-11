@@ -1,5 +1,6 @@
 import { ChangeEvent, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { sdk } from '../../services/SDK'
 
 const Header = () => {
   const currentAvatar =

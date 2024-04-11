@@ -4,14 +4,14 @@ interface InputPros {
   inputMessage: string;
   handleChangeInput: (e: ChangeEvent<HTMLInputElement>) => void;
   onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void;
-  handleSendMessage: () => void;
+  handleMessage: () => void;
 }
 
 const InputMessage: React.FC<InputPros> = ({
   inputMessage,
   handleChangeInput,
   onKeyDown,
-  handleSendMessage,
+  handleMessage,
 }) => {
   return (
     <div className="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4 mx-4 mb-4">
@@ -63,7 +63,7 @@ const InputMessage: React.FC<InputPros> = ({
 
       <div className="ml-4">
         <button
-          onClick={handleSendMessage}
+          onClick={handleMessage}
           className="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0"
         >
           <span>Send</span>
