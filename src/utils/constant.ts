@@ -26,7 +26,7 @@ export interface IMessage {
       username: string;
       name: string;
     };
-    unread: boolean;
+    unread?: boolean;
     _updatedAt: {
       $date: number;
     };

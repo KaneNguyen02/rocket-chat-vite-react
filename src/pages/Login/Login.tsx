@@ -26,7 +26,6 @@ const Login: React.FC = () => {
 
       try {
         const res: any = await sdk.login({ username, password });
-        console.log("🚀 ~ fetchData ~ res:", res)
         StorageService.set("token", res.token)
         StorageService.set("id",res.id )
         navigate("/");

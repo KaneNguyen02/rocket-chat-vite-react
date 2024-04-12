@@ -1,6 +1,11 @@
 import React, { ChangeEvent, useState } from 'react'
+import { sdk } from '../../services/SDK'
+import { API_HOST_URL } from '../../api/axiosInstance'
 
 const SettingPage: React.FC = () => {
+  const username = sdk.currentUser?.username
+  const currentAvatar = `${API_HOST_URL}/avatar/${username}`
+  
   const [image, setImage] = useState<string | ArrayBuffer | null>('')
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -15,6 +20,7 @@ const SettingPage: React.FC = () => {
       reader.readAsDataURL(file)
     }
   }
+
   return (
     <div>
       <h2 className='font-bold text-xl'>User settings</h2>
@@ -30,7 +36,7 @@ const SettingPage: React.FC = () => {
                       ? typeof image === 'string'
                         ? image
                         : ''
-                      : 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGZhY2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60'
+                      : currentAvatar
                   }
                   alt='Bordered avatar'
                 />

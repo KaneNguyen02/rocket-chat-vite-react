@@ -4,7 +4,6 @@ import { IMessage } from '../utils/constant'
 class SDK {
   sdk: Rocketchat
   currentUser: any
-  // historyMessage: IMessage[]
   currentSubscription: any
 
   connect() {
@@ -79,6 +78,14 @@ class SDK {
     } catch (error) {
       console.error('Error deleting message:', error)
     }
+  }
+
+  async getHistory(rid: string, quantityMessage: number) {
+      const history = await this.current.methodCall('loadHistory', rid, null, quantityMessage, new Date().toISOString())
+      console.log('🚀 ~ SDK ~ getHistory ~ history:', history)
+      const messageHistory = history.messages
+      messageHistory.sort((a: IMessage, b: IMessage) => a.ts.$date - b.ts.$date)
+      return messageHistory
   }
 }
 

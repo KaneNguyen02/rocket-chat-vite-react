@@ -11,7 +11,6 @@ function ServerProvider({ children }: any): ReactNode {
       
       try {
         sdk.connect()
-        console.log('000', sdk.current);
         setReady(true)
         
       } catch (error) {

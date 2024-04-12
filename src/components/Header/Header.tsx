@@ -1,10 +1,12 @@
 import { ChangeEvent, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { sdk } from '../../services/SDK'
+import { API_HOST_URL } from '../../api/axiosInstance'
 
 const Header = () => {
-  const currentAvatar =
-    'https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144'
+  
+  const username = sdk.currentUser?.username
+  const currentAvatar = `${API_HOST_URL}/avatar/${username}`
 
   const [isHovered, setIsHovered] = useState(false)
   const handleMouseEnter = () => {
@@ -14,8 +16,6 @@ const Header = () => {
   const handleMouseLeave = () => {
     setIsHovered(false)
   }
-
-
 
   return (
     <>

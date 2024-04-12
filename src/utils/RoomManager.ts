@@ -1,5 +1,7 @@
 import api from '../api/axiosInstance'
+import { useMessages } from '../contexts/MessageContext'
 import { sdk } from '../services/SDK'
+import { IMessage } from './constant'
 
 export class RoomManager {
   private promise?: Promise<any>
@@ -7,37 +9,31 @@ export class RoomManager {
   private queue: any[] = []
 
   private messageListener: any
-  // private rid: string
+  private rid: string
   private isAlive: boolean = true
 
   // constructor(rid: string) {
-  //   this.rid = rid
-    // this.isAlive = true
+  // this.rid = rid
+  // this.isAlive = true
   //   this.timer = null
   //   this.queue = []
   // }
+  constructor(private updateMessages: (message: IMessage) => void, rid: string) {
+    this.rid = rid
+  }
 
-  async subscribe(rid: string) {
-    console.log(await this.promise);
-    
-    if (await this.promise) {
-      console.log('vao day roi');
-      
+  async subscribe() {
+    if (this.promise) {
       return await this.unsubscribe()
     }
 
-    console.log('this.promise', this.promise);
-    
-
-    this.promise = sdk.current.subscribeRoom(rid)
+    this.promise = sdk.current.subscribeRoom(this.rid)
     // goi api lay room info
     // const info = await api.get(`/api/v1/rooms.info?roomId=${rid}`, )
-    // console.log("🚀 ~ RoomManager ~ subscribe ~ info:", info)
 
-    if (rid) {
-      console.log("~ rid:", rid)
+    if (this.rid) {
       this.messageListener = sdk.current.onStreamData('stream-room-messages', this.handleReceiveMessage.bind(this))
-      console.log('this.messageListener', this.messageListener);
+      console.log('this.messageListener', this.messageListener)
     }
 
     if (!this.isAlive) {
@@ -48,11 +44,19 @@ export class RoomManager {
   }
 
   async unsubscribe() {
+    this.isAlive = false
     if (await this.promise) {
-      console.log('unsubscribingggggggggg');
-      
+      console.log('unsubscribingggggggggg')
+
       sdk.current.unsubscribe(this.promise)
       this.messageListener = null
+
+      try {
+        const subscriptions = (await this.promise) || []
+        // subscriptions.forEach((sub: any) => sub.current?.unsubscribe().catch(() => console.log('unsubscribeRoom')))
+      } catch (e) {
+        // do nothing
+      }
     }
 
     this.removeListener(this.messageListener)
@@ -74,27 +78,25 @@ export class RoomManager {
   }
 
   handleReceiveMessage(message: any) {
-
+    console.log('🚀 ~ RoomManager ~ handleReceiveMessage ~ this.timer:', this.timer)
     if (!this.timer) {
       this.timer = setTimeout(() => {
-        this.timer = null
-        if (this.queue.length === 0) {
-          return
-        }
-
         this.queue.forEach((msg, index) => {
-          this.updateMessage(msg)
+          this.updateMessage(msg, index)
         })
+
+        this.timer = null
       }, 150)
     }
-    this.queue.push(message)
+    const messageUpdate = message.fields?.args[0]
+    this.queue.push(messageUpdate)
   }
 
-  updateMessage(message: any) {
-    // console.log('message >>>>', message)
+  updateMessage(message: any, index: number) {
+    this.queue.splice(index, 1)
+    console.log('message >>>>', message)
+    this.updateMessages(message)
   }
-
-  
 }
 
-export const roomManager = new RoomManager()
+// export const roomManager = new RoomManager()

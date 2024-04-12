@@ -6,6 +6,7 @@ import { PrivateRoute } from './routes/PrivateRoute'
 import ServerProvider from './providers/ServerProvider'
 import { Suspense } from 'react'
 import SubscriptionProvider from './providers/SubscriptionProvider'
+import { MessageProvider } from './contexts/MessageContext'
 
 function App() {
   return (
@@ -40,7 +41,9 @@ function App() {
                     <CurrentLayout>
                       <Suspense fallback={<div>Loading...</div>}>
                         <PrivateRoute>
+                          <MessageProvider>
                             <Page />
+                          </MessageProvider>
                         </PrivateRoute>
                       </Suspense>
                     </CurrentLayout>
