@@ -18,8 +18,10 @@ export class RoomManager {
   //   this.timer = null
   //   this.queue = []
   // }
-  constructor(private updateMessages: (message: IMessage) => void, rid: string) {
+  constructor(private updateMessages: (message: IMessage) => void, rid: string, private replaceMessageEdit: (newMessage: IMessage) => void) {
     this.rid = rid
+    this.updateMessages = updateMessages
+    this.replaceMessageEdit = replaceMessageEdit
   }
 
   async subscribe() {
@@ -92,10 +94,13 @@ export class RoomManager {
     this.queue.push(messageUpdate)
   }
 
-  updateMessage(message: any, index: number) {
+  updateMessage(message: IMessage, index: number) {
     this.queue.splice(index, 1)
-    console.log('message >>>>', message)
-    this.updateMessages(message)
+    if (message.editedBy) {
+      return this.replaceMessageEdit(message)
+    } else {
+      return this.updateMessages(message)
+    }
   }
 }
 

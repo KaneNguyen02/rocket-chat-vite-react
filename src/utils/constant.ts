@@ -40,4 +40,11 @@ export interface IMessage {
         value: string;
       }[];
     }[];
+    editedAt?: {
+      $date: number;
+    };
+    editedBy?: {
+      _id: string;
+      username: string;
+    };
   }

@@ -1,5 +1,6 @@
 import { Rocketchat } from '@rocket.chat/sdk'
 import { IMessage } from '../utils/constant'
+import { API_HOST_URL } from '../api/axiosInstance'
 
 class SDK {
   sdk: Rocketchat
@@ -8,8 +9,9 @@ class SDK {
 
   connect() {
     this.sdk = new Rocketchat({
-      host: 'https://wrapper.v2.d-soft.tech',
-      useSsl: true,
+      // host: 'https://wrapper.v2.d-soft.tech',
+      host: API_HOST_URL,
+      useSsl: false,
       protocol: 'ddp',
       reopen: 20000
     })
@@ -64,8 +66,7 @@ class SDK {
     }
 
     try {
-      const result = await this.current.methodCall('updateMessage', message)
-      console.log(result)
+      await this.current.methodCall('updateMessage', message)
     } catch (error) {
       console.error('Error editing message:', error)
     }
@@ -80,9 +81,9 @@ class SDK {
     }
   }
 
-  async getHistory(rid: string, quantityMessage: number) {
-      const history = await this.current.methodCall('loadHistory', rid, null, quantityMessage, new Date().toISOString())
-      console.log('🚀 ~ SDK ~ getHistory ~ history:', history)
+  async getHistory(rid: string, timestamp: {$date: number} | null, quantityMessage: number) {
+      const history = await this.current.methodCall('loadHistory', rid, timestamp, quantityMessage, new Date().toISOString())
+      // console.log('🚀 ~ SDK ~ getHistory ~ history:', history)
       const messageHistory = history.messages
       messageHistory.sort((a: IMessage, b: IMessage) => a.ts.$date - b.ts.$date)
       return messageHistory
