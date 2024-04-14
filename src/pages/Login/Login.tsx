@@ -37,7 +37,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-full h-screen justify-center bg-[url('../../../public/login-bg.png')]">
+    <div className="flex min-h-full h-screen justify-center bg-[url('/login-bg.png')]">
       <div className="flex justify-center items-center ">
         <form onSubmit={handleSubmit}>
           <div className="w-[400px] min-h-[350px] bg-opacity-10 bg-white backdrop-filter backdrop-blur-lg p-6 rounded-xl border border-white ">

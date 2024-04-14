@@ -1,24 +1,44 @@
 import React, { ChangeEvent, useState } from 'react'
 import { sdk } from '../../services/SDK'
-import { API_HOST_URL } from '../../api/axiosInstance'
+import api, { API_HOST_URL } from '../../api/axiosInstance'
 
 const SettingPage: React.FC = () => {
   const username = sdk.currentUser?.username
   const currentAvatar = `${API_HOST_URL}/avatar/${username}`
-  
-  const [image, setImage] = useState<string | ArrayBuffer | null>('')
+
+  console.log("🚀 ~ currentAvatar:", currentAvatar)
+  const [image, setImage] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
-    const reader = new FileReader()
-
-    reader.onloadend = () => {
-      setImage(reader.result)
-    }
-
     if (file) {
+      // console.log("🚀 ~ handleImageChange ~ file:", file)
+      setImage(file)
+
+      const reader = new FileReader()
+      reader.onload = () => {
+        setPreviewUrl(reader.result as string)
+      }
       reader.readAsDataURL(file)
     }
+  }
+
+  const updateAvatar = () => {
+    if (!image) return
+    console.log(image)
+    const formData = new FormData()
+
+    formData.append("image", image)
+
+    api
+      .post('/api/v1/users.setAvatar', formData)
+      .then((response) => {
+        console.log('Avatar updated successfully:', response.data)
+      })
+      .catch((error) => {
+        console.error('Error updating avatar:', error)
+      })
   }
 
   return (
@@ -31,13 +51,7 @@ const SettingPage: React.FC = () => {
               <div className='flex flex-col items-center space-y-5 sm:flex-row sm:space-y-0'>
                 <img
                   className='object-cover w-40 h-40 p-1 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-500'
-                  src={
-                    image
-                      ? typeof image === 'string'
-                        ? image
-                        : ''
-                      : currentAvatar
-                  }
+                  src={image ? (typeof previewUrl === 'string' ? previewUrl : '') : currentAvatar}
                   alt='Bordered avatar'
                 />
 
@@ -144,6 +158,7 @@ const SettingPage: React.FC = () => {
 
                 <div className='flex justify-end'>
                   <button
+                    onClick={() => updateAvatar()}
                     type='submit'
                     className='text-white bg-indigo-700  hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800'
                   >
