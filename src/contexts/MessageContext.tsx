@@ -26,13 +26,13 @@ export const MessageProvider = ({ children }: MessageProviderProps) => {
       console.log('🚀 ~ getHistory ~ history:', history)
       setListMessage(history)
     }
-    getHistory()
+    getHistory().then(()=> console.log('>>>>>>>>.')
+    )
   }, [])
 
   const updateMessages = (newMessage: IMessage) => {
     setListMessage((prevMessages) => [...prevMessages, newMessage])
   }
-
 
   const replaceMessageEdit = useCallback(
     (messageEdited: IMessage) => {

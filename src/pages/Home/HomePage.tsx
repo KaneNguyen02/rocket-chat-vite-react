@@ -1,38 +1,41 @@
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react'
-// import api, { API_HOST_URL } from "../../api/axiosInstance";
 import InputMessage from '../../components/InputMessage/InputMessage'
-
 import { sdk } from '../../services/SDK'
-import { IMessage } from '../../utils/constant'
 import StorageService from '../../utils/storage'
-import { fakeData } from '../../../data'
-import clsx from 'clsx'
 
-import { API_BASE_URL, API_HOST_URL } from '../../api/axiosInstance'
 import { useMessages } from '../../contexts/MessageContext'
 import { RoomManager } from '../../utils/RoomManager'
 import MessageItem from '../../components/MessageItem/MessageItem'
 
-const HomePage = () => {
-  const [inputMessage, setInputMessage] = useState('')
-  // const [listMessage, setListMessage] = useState<IMessage[]>([])
-  const { listMessage } = useMessages()
+enum ScrollState {
+  LOAD_MORE = 0,
+  SENT = 1
+}
 
+const HomePage = () => {
+  const { listMessage, updateMessages, getMessageScroll, replaceMessageEdit } = useMessages()
   const userId = StorageService.get('id')
-  const messagesEndRef = useRef<null | HTMLDivElement>(null)
-  const messageContainerRef = useRef<null | HTMLDivElement>(null)
+  const [inputMessage, setInputMessage] = useState('')
 
   const [isEditMs, setIsEditMs] = useState<boolean>(false)
   const [messageSelected, setMessageSelected] = useState<string>('')
+  const [oldScrollHeight, setOldScrollHeight] = useState<number>(0)
+  const [scroll, setScroll] = useState<ScrollState>(ScrollState.LOAD_MORE)
 
-  const { updateMessages, getMessageScroll, replaceMessageEdit } = useMessages()
+  const messagesEndRef = useRef<null | HTMLDivElement>(null)
+  const messageContainerRef = useRef<null | HTMLDivElement>(null)
 
   const romId = 'GENERAL'
   const roomManager = new RoomManager(updateMessages, romId, replaceMessageEdit)
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView()
+    if (scroll === ScrollState.SENT) {
+      messagesEndRef.current?.scrollIntoView()
+      setScroll(ScrollState.LOAD_MORE)
+    }
   }
+
+
 
   useEffect(scrollToBottom, [listMessage])
 
@@ -40,13 +43,35 @@ const HomePage = () => {
     roomManager.subscribe()
   }, [])
 
-  useEffect(() => {
-    const handleScroll = () => {
-      console.log('messageContainerRef.current.scrollTop', messageContainerRef.current?.scrollTop);
-      if (messageContainerRef.current && messageContainerRef.current.scrollTop === 0) {
-        loadMoreMessage()
+  const loadMoreMessage = async () => {
+    const generalRoomId = 'GENERAL'
+    const oldestMessage = listMessage[0]
+    const timestamp = oldestMessage?.ts
+
+    const quantityMessage = 10
+
+    await getMessageScroll(generalRoomId, timestamp, quantityMessage)
+
+    requestAnimationFrame(() => {
+      if (messageContainerRef.current?.scrollHeight) {
+        const newScrollHeight = messageContainerRef.current.scrollHeight
+        console.log('new: ', newScrollHeight, 'old', oldScrollHeight)
+
+        const newScrollPosition = newScrollHeight - oldScrollHeight
+        messageContainerRef.current?.scrollTo(0, newScrollPosition)
       }
+    })
+  }
+
+  const handleScroll = () => {
+    if (messageContainerRef.current?.scrollTop === 0) {
+      const currentScrollHeight = messageContainerRef.current?.scrollHeight
+      setOldScrollHeight(currentScrollHeight || 0)
+      loadMoreMessage()
     }
+  }
+
+  useEffect(() => {
     const messageContainerElement = messageContainerRef.current
     if (messageContainerElement) {
       messageContainerElement.addEventListener('scroll', handleScroll)
@@ -57,16 +82,7 @@ const HomePage = () => {
         messageContainerElement.removeEventListener('scroll', handleScroll)
       }
     }
-  }, [])
-
-  const loadMoreMessage = async () => {
-    const generalRoomId = 'GENERAL'
-    const oldestMessage = listMessage[0]
-    const timestamp = oldestMessage.ts
-
-    const quantityMessage = 10
-    getMessageScroll(generalRoomId, timestamp, quantityMessage)
-  }
+  }, [handleScroll])
 
   const sendMessage = async (inputMessage: string) => {
     const res = await sdk.current.methodCall('sendMessage', {
@@ -74,7 +90,6 @@ const HomePage = () => {
       msg: inputMessage
     })
     console.log('🚀 ~ sendMessage ~ res:', res)
-    // setListMessage((prevMessage) => [...prevMessage, res])
     setInputMessage('')
   }
 
@@ -89,6 +104,7 @@ const HomePage = () => {
         setIsEditMs(false)
         console.log('isEdit', isEditMs)
       } else {
+        setScroll(ScrollState.SENT)
         sendMessage(inputMessage)
       }
     }
@@ -98,8 +114,8 @@ const HomePage = () => {
     if (isEditMs) {
       updateMessage(messageSelected, inputMessage)
       setIsEditMs(false)
-      console.log('isEdit', isEditMs)
     } else {
+      setScroll(ScrollState.SENT)
       sendMessage(inputMessage)
     }
   }
