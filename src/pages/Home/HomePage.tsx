@@ -139,16 +139,22 @@ const HomePage = () => {
   console.log('0000', listMessage)
 
   return (
-    <div className='w-full h-full rounded-2xl bg-gray-100'>
+    <div className='w-full h-full rounded-2xl'>
       <div className='flex flex-col w-full h-full flex-shrink-0 '>
-        <div ref={messageContainerRef} className='flex flex-col overflow-x-auto mb-4 m-4 h-[76vh] gap-2'>
+        <div className='w-full h-12 bg-blue-300'>
+          <div className="">GENERAL</div>
+        </div>
+
+        <div ref={messageContainerRef} className='flex flex-col overflow-x-auto mb-4 m-4 h-[76vh] gap-1'>
           {listMessage &&
-            listMessage.map((item) => {
+            listMessage.map((item, index, arr) => {
+              const isSameUser = item?.u.username === arr[index -1]?.u.username
               return (
                 <MessageItem
                   key={item._id}
                   message={item}
                   userId={userId}
+                  sameUserPrev={isSameUser}
                   onEdit={handleEditMessage}
                   onDelete={handleDeleteMessage}
                 />

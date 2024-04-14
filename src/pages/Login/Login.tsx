@@ -37,10 +37,10 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-full h-screen justify-center ">
+    <div className="flex min-h-full h-screen justify-center bg-[url('../../../public/login-bg.png')]">
       <div className="flex justify-center items-center ">
         <form onSubmit={handleSubmit}>
-          <div className="w-[400px] min-h-[350px] bg-slate-400 p-6 rounded-xl">
+          <div className="w-[400px] min-h-[350px] bg-opacity-10 bg-white backdrop-filter backdrop-blur-lg p-6 rounded-xl border border-white ">
             <div className="flex flex-col  gap-5">
               <div className="text-2xl font-bold text-center">SIGN IN</div>
               <div className="">
@@ -56,7 +56,7 @@ const Login: React.FC = () => {
                   value={username}
                   onChange={handleChangeUsername}
                   placeholder="Enter username"
-                  className="px-4 py-3 w-full rounded-xl focus-visible:outline-indigo-600 "
+                  className="px-4 py-3 w-full rounded-xl focus-visible:outline-indigo-600 bg-opacity-30 bg-white border border-white"
                 />
               </div>
 
@@ -73,7 +73,7 @@ const Login: React.FC = () => {
                   placeholder="Enter username"
                   value={password}
                   onChange={handleChangePassword}
-                  className="px-4 py-3 w-full rounded-xl focus-visible:outline-indigo-600"
+                  className="px-4 py-3 w-full rounded-xl focus-visible:outline-indigo-600 bg-opacity-30 bg-white border border-white"
                   current-password="current-password"
                 />
                 <p className="leading-8 ">
