@@ -1,17 +1,23 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useReducer, useState } from 'react'
 import { sdk } from '../../services/SDK'
 import api, { API_HOST_URL } from '../../api/axiosInstance'
 import { IUserInfo } from '../../utils/constant'
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify'
 const statusOptions = ['online', 'away', 'busy', 'offline']
 
 const SettingPage: React.FC = () => {
-  const username = sdk.currentUser?.username
-  const currentAvatar = `${API_HOST_URL}/avatar/${username}`
+  let username = sdk.currentUser?.username
+  let currentAvatar = `${API_HOST_URL}/avatar/${username}`
 
-  console.log('🚀 ~ currentAvatar:', currentAvatar)
   const [image, setImage] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+
+  useEffect(() => {
+    const getUsername = async () => {
+      username = await sdk.currentUser?.username
+    }
+    getUsername().then(() => console.log(1111111))
+  }, [sdk.currentUser])
 
   const [info, setInfo] = useState({
     name: '',
@@ -54,10 +60,10 @@ const SettingPage: React.FC = () => {
       .post('/api/v1/users.setAvatar', formData)
       .then((response) => {
         console.log('Avatar updated successfully:', response.data)
-        if(response.status === 200) {
-          toast.success("Update avatar success!")
-        }else{
-          toast.error("Update failed")
+        if (response.status === 200) {
+          toast.success('Update avatar success!')
+        } else {
+          toast.error('Update failed')
         }
       })
       .catch((error) => {
@@ -80,18 +86,18 @@ const SettingPage: React.FC = () => {
       console.log(info)
     }
     getInfo()
-  }, [])
+  }, [sdk.currentUser])
 
   const handleUpdateProfile = async () => {
     const updateOwnBasicInfo = async () => {
-     const res  = await api.post(`/api/v1/users.updateOwnBasicInfo`, {
+      const res = await api.post(`/api/v1/users.updateOwnBasicInfo`, {
         data: info
       })
-      
-      if(res.status === 200) {
-        toast.success("Update info success!")
-      }else{
-        toast.error("Update failed")
+
+      if (res.status === 200) {
+        toast.success('Update info success!')
+      } else {
+        toast.error('Update failed')
       }
     }
     await updateOwnBasicInfo()
@@ -100,7 +106,7 @@ const SettingPage: React.FC = () => {
   return (
     <div>
       <h2 className='font-bold text-xl'>User settings</h2>
-      <main className='w-full min-h-screen py-1 md:w-2/3 lg:w-3/4'>
+      <main className='w-full py-1 md:w-2/3 lg:w-3/4'>
         <div className='p-2 md:p-4'>
           <div className='w-full px-6 pb-8 mt-8 sm:max-w-xl sm:rounded-lg'>
             <div className='grid max-w-2xl mx-auto mt-8'>
@@ -138,7 +144,7 @@ const SettingPage: React.FC = () => {
               <div className='items-center mt-8 sm:mt-14 text-[#202142]'>
                 <div className='flex flex-col items-center w-full mb-2 space-x-0 space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 sm:mb-6'>
                   <div className='w-full'>
-                    <label htmlFor='name' className='block mb-2 text-sm font-medium text-indigo-900 dark:text-white'>
+                    <label htmlFor='name' className='block mb-2 text-sm font-medium text-indigo-900'>
                       Name
                     </label>
                     <input
@@ -153,10 +159,7 @@ const SettingPage: React.FC = () => {
                   </div>
 
                   <div className='w-full'>
-                    <label
-                      htmlFor='username'
-                      className='block mb-2 text-sm font-medium text-indigo-900 dark:text-white'
-                    >
+                    <label htmlFor='username' className='block mb-2 text-sm font-medium text-indigo-900'>
                       Username
                     </label>
                     <input
@@ -172,7 +175,7 @@ const SettingPage: React.FC = () => {
                 </div>
 
                 {/* <div className='mb-2 sm:mb-6'>
-                  <label htmlFor='email' className='block mb-2 text-sm font-medium text-indigo-900 dark:text-white'>
+                  <label htmlFor='email' className='block mb-2 text-sm font-medium text-indigo-900'>
                     Your email
                   </label>
                   <input
@@ -187,10 +190,7 @@ const SettingPage: React.FC = () => {
                 </div> */}
 
                 <div className='mb-2 sm:mb-6'>
-                  <label
-                    htmlFor='statusType'
-                    className='block mb-2 text-sm font-medium text-indigo-900 dark:text-white'
-                  >
+                  <label htmlFor='statusType' className='block mb-2 text-sm font-medium text-indigo-900'>
                     Status
                   </label>
 
@@ -211,7 +211,7 @@ const SettingPage: React.FC = () => {
                 </div>
 
                 <div className='mb-6'>
-                  <label htmlFor='bio' className='block mb-2 text-sm font-medium text-indigo-900 dark:text-white'>
+                  <label htmlFor='bio' className='block mb-2 text-sm font-medium text-indigo-900'>
                     Bio
                   </label>
                   <textarea

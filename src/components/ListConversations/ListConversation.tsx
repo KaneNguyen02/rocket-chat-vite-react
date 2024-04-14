@@ -75,7 +75,7 @@ const ListConversation: React.FC = () => {
       <div className='py-2 px-2 bg-grey-lightest'>
         <input
           type='text'
-          className='w-full px-6 py-2 text-sm rounded-full outline-white focus:outline-blue-600'
+          className='w-full px-6 py-2 text-sm rounded-full border outline-blue-400 focus:outline-blue-300'
           placeholder='Search or start new chat'
         />
       </div>
