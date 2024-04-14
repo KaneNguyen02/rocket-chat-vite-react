@@ -1,7 +1,7 @@
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { sdk } from '../../services/SDK'
-import { API_HOST_URL } from '../../api/axiosInstance'
+import { sdk } from '../../services/SDK';
+import api, { API_HOST_URL } from '../../api/axiosInstance'
 
 const Header = () => {
   
@@ -19,10 +19,10 @@ const Header = () => {
 
   return (
     <>
-      <div className='flex justify-between items-center h-14 w-full bg-gray-300 mb-6 '>
-        <div className='flex ml-6 my-2'>
+      <div className='flex justify-between items-center h-18 w-full border-b-2 mb-2 '>
+        <div className='flex overflow-hidden ml-6'>
           <Link to='/'>
-            <img src='/logo.svg' alt='logo' />
+            <img  className='w-40 h-16 object-cover' src='/logo.png' alt='logo' />
           </Link>
         </div>
 
@@ -36,15 +36,12 @@ const Header = () => {
 
             {isHovered && (
               <div
-                className='absolute top-5 right-0  my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-md shadow dark:bg-gray-700 dark:divide-gray-600'
+                className='z-50 absolute top-5 right-0  my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-md shadow dark:bg-gray-700 dark:divide-gray-600'
                 id='dropdown-2'
               >
                 <div className='px-4 py-3' role='none'>
                   <p className='text-sm text-gray-900 dark:text-white' role='none'>
-                    Neil Sims
-                  </p>
-                  <p className=' text-sm font-medium text-gray-900 truncate dark:text-gray-300' role='none'>
-                    neil.sims@flowbite.com
+                    {username}
                   </p>
                 </div>
                 <ul className='py-1' role='none'>

@@ -19,7 +19,7 @@ const MessageItem: React.FC<IMessageItemProps> = ({ message, userId, sameUserPre
 
   const messageTime = moment(message.ts.$date);
   const isToday = messageTime.isSame(moment(), 'day');
-  const formattedDateTime = isToday ? messageTime.format('HH:mm') : messageTime.format('D MMM YYYY, HH:mm');
+  const formattedDateTime = isToday ? messageTime.format('HH:mm') + ' Today' : messageTime.format('D MMM YYYY, HH:mm');
 
   return (
     <div key={message._id} className=' '>
@@ -51,11 +51,11 @@ const MessageItem: React.FC<IMessageItemProps> = ({ message, userId, sameUserPre
             )}
           </div>
 
-          <div className={isSelf ? 'self-end text-sm max-w-lg  w-fit' : 'text-sm  max-w-lg  w-fit'}>
+          <div className={isSelf ? 'self-end text-sm max-w-lg w-fit' : 'text-sm  max-w-lg  w-fit'}>
             <div
-              className={clsx('px-4 py-2 rounded-tl-3xl rounded-tr-2xl rounded-br-sm rounded-bl-3xl', {
-                'bg-[#0A7CFF] text-white': isSelf,
-                'bg-[#F0F0F0]': !isSelf
+              className={clsx('px-4 py-2 ', {
+                'bg-[#0A7CFF] text-white rounded-tl-3xl rounded-tr-2xl rounded-br-sm rounded-bl-3xl': isSelf,
+                'bg-[#F0F0F0] opacity-80 backdrop-filter backdrop-blur-sm rounded-tl-2xl rounded-tr-3xl rounded-br-3xl rounded-bl-sm': !isSelf
               })}
             >
               <p>{message.msg}</p>
