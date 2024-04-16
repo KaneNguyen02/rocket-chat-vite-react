@@ -37,7 +37,6 @@ export class RoomManager {
     }
 
     this.promise = await sdk.current.subscribeRoom(this.rid)
-    console.log('🚀 ~ RoomManager ~ subscribe ~ this.promise:', this.promise)
     // goi api lay room info
     // const info = await api.get(`/api/v1/rooms.info?roomId=${rid}`, )
 
@@ -134,7 +133,6 @@ export class RoomManager {
     console.log('del > ', message)
 
     if (!this.timerDel) {
-      // cung timer check var
       this.timerDel = setTimeout(() => {
         this.queueDel.forEach((msg, index) => {
           this.updateListMessageDel(msg, index)

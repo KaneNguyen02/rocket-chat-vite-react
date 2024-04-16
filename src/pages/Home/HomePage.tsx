@@ -44,7 +44,7 @@ const HomePage = () => {
   useEffect(scrollToBottom, [listMessage])
 
   useEffect(() => {
-    console.log('.subscribe');
+    console.log('.subscribe')
     roomManager.subscribe()
   }, [])
 
@@ -109,6 +109,9 @@ const HomePage = () => {
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
+      if (!inputMessage.trim()) {
+        return
+      }
       if (isEditMs) {
         updateMessage(messageSelected, inputMessage)
         setIsEditMs(false)
@@ -121,6 +124,9 @@ const HomePage = () => {
   }
 
   const handleMessage = () => {
+    if (!inputMessage.trim()) {
+      return
+    }
     if (isEditMs) {
       updateMessage(messageSelected, inputMessage)
       setIsEditMs(false)
@@ -144,10 +150,7 @@ const HomePage = () => {
 
   const handleDeleteMessage = async (mId: string) => {
     const deleteMessage = await sdk.deleteMessage(mId)
-
   }
-
-
 
   // console.log('0000', listMessage)
   // bg-[#B3C8CF]
