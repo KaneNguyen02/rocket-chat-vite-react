@@ -40,7 +40,7 @@ function App() {
                   path={route.path}
                   element={
                     <CurrentLayout>
-                      <Suspense fallback={<div>Loading...</div>}>
+                      <Suspense fallback={ <div className='flex h-screen justify-center items-center'><img src="./loading.svg" alt="loading" className='h-52' /></div>}>
                         <PrivateRoute>
                           <MessageProvider>
                             <Page />

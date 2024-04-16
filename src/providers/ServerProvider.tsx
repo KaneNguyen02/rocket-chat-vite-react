@@ -22,7 +22,7 @@ function ServerProvider({ children }: any): ReactNode {
   })
 
   if (!ready) {
-    return <div>Loading...</div>
+    return  <div className='flex h-screen justify-center items-center'><img src="./loading.svg" alt="loading" className='h-52' /></div>
   }
 
   return <Fragment>{children}</Fragment>

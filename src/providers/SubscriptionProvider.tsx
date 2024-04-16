@@ -32,7 +32,7 @@ function SubscriptionProvider({ children }: any): ReactNode {
   }, [])
 
   if (!ready) {
-    return <div>Loading SubscriptionProvider...</div>
+    return  <div className='flex h-screen justify-center items-center'><img src="./loading.svg" alt="loading" className='h-52' /></div>
   }
   return <>{children}</>
 }

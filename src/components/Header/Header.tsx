@@ -1,14 +1,18 @@
 import { ChangeEvent, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { sdk } from '../../services/SDK';
 import api, { API_HOST_URL } from '../../api/axiosInstance'
+import StorageService from '../../utils/storage';
+
 
 const Header = () => {
-  
+
   const username = sdk.currentUser?.username
   const currentAvatar = `${API_HOST_URL}/avatar/${username}?${new Date().getTime()}`
 
   const [isHovered, setIsHovered] = useState(false)
+  const navigate = useNavigate()
+
   const handleMouseEnter = () => {
     setIsHovered(true)
   }
@@ -16,6 +20,14 @@ const Header = () => {
   const handleMouseLeave = () => {
     setIsHovered(false)
   }
+
+  const handleLogout = () =>{
+    sdk.disconnect() 
+    StorageService.clear()
+    navigate('/sign-in')
+  }
+
+
 
   return (
     <>
@@ -57,6 +69,7 @@ const Header = () => {
 
                   <li>
                     <a
+                    onClick={handleLogout}
                       href='#'
                       className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white'
                       role='menuitem'
