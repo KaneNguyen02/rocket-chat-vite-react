@@ -7,8 +7,7 @@ const statusOptions = ['online', 'away', 'busy', 'offline']
 
 const SettingPage: React.FC = () => {
   let username = sdk.currentUser?.username
-  let currentAvatar = `${API_HOST_URL}/avatar/${username}`
-
+  const [currentAvatar, setCurrentAvatar] = useState<string>(`${API_HOST_URL}/avatar/${username}?${new Date().getTime()}`)
   const [image, setImage] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
@@ -62,6 +61,7 @@ const SettingPage: React.FC = () => {
         console.log('Avatar updated successfully:', response.data)
         if (response.status === 200) {
           toast.success('Update avatar success!')
+          setCurrentAvatar(`${API_HOST_URL}/avatar/${username}?${new Date().getTime()}`)
         } else {
           toast.error('Update failed')
         }
@@ -228,7 +228,7 @@ const SettingPage: React.FC = () => {
                   <button
                     onClick={() => handleUpdateProfile()}
                     type='submit'
-                    className='text-white bg-indigo-700  hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800'
+                    className='text-white bg-blue-600  hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800'
                   >
                     Save
                   </button>

@@ -7,6 +7,8 @@ type MessageContextType = {
   updateMessages: (newMessage: IMessage) => void
   getMessageScroll: (rid: string, timestamp: { $date: number }, quantityMessage: number) => void
   replaceMessageEdit: (newMessage: IMessage) => void
+  deleteMessageItem: (mId: string) => void
+  setListMessage: React.Dispatch<React.SetStateAction<IMessage[]>>
 }
 
 const MessageContext = createContext<MessageContextType | null>(null)
@@ -26,8 +28,7 @@ export const MessageProvider = ({ children }: MessageProviderProps) => {
       console.log('🚀 ~ getHistory ~ history:', history)
       setListMessage(history)
     }
-    getHistory().then(()=> console.log('>>>>>>>>.')
-    )
+    getHistory().then(() => console.log('>>>>>>>>.'))
   }, [])
 
   const updateMessages = (newMessage: IMessage) => {
@@ -48,6 +49,15 @@ export const MessageProvider = ({ children }: MessageProviderProps) => {
     [listMessage]
   )
 
+  const deleteMessageItem = useCallback((mId: string) => {
+    return setListMessage((prevMessages) => {
+      
+      const newListMessage = [...prevMessages]
+      const result = newListMessage.filter((message) => message._id !== mId)
+      return [...result]
+    })
+  }, [listMessage]) 
+
   const getMessageScroll = async (rid: string, timestamp: { $date: number }, quantityMessage: number) => {
     const historyOldMessage = await sdk.getHistory(rid, timestamp, quantityMessage)
     console.log('historyOldMessage', historyOldMessage)
@@ -56,7 +66,9 @@ export const MessageProvider = ({ children }: MessageProviderProps) => {
   }
 
   return (
-    <MessageContext.Provider value={{ listMessage, updateMessages, getMessageScroll, replaceMessageEdit }}>
+    <MessageContext.Provider
+      value={{ listMessage, updateMessages, getMessageScroll, replaceMessageEdit, deleteMessageItem, setListMessage }}
+    >
       {children}
     </MessageContext.Provider>
   )

@@ -102,6 +102,7 @@ const ListConversation: React.FC = () => {
                     <p className='text-grey-darkest'>{item.name}</p>
                     <p className='text-xs text-grey-darkest'>{item.time}</p>
                   </div>
+                  {/* item.name === 'General' ? listMessage[listMessage.length].msg : item.lastMessage */}
                   <p className='text-grey-dark mt-1 text-sm'>{item.lastMessage}</p>
                 </div>
               </div>

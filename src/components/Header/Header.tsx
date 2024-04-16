@@ -6,7 +6,7 @@ import api, { API_HOST_URL } from '../../api/axiosInstance'
 const Header = () => {
   
   const username = sdk.currentUser?.username
-  const currentAvatar = `${API_HOST_URL}/avatar/${username}`
+  const currentAvatar = `${API_HOST_URL}/avatar/${username}?${new Date().getTime()}`
 
   const [isHovered, setIsHovered] = useState(false)
   const handleMouseEnter = () => {

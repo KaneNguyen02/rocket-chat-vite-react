@@ -44,7 +44,7 @@ const MessageItem: React.FC<IMessageItemProps> = ({ message, userId, sameUserPre
           <div className='w-7 h-7'>
             {!sameUserPrev && (
               <img
-                src={`${API_HOST_URL}/avatar/${message.u.username}`}
+                src={`${API_HOST_URL}/avatar/${message.u.username}?${new Date().getTime()}`}
                 alt='My profile'
                 className=' rounded-full order-1'
               />
@@ -54,8 +54,8 @@ const MessageItem: React.FC<IMessageItemProps> = ({ message, userId, sameUserPre
           <div className={isSelf ? 'self-end text-sm max-w-lg w-fit' : 'text-sm  max-w-lg  w-fit'}>
             <div
               className={clsx('px-4 py-2 ', {
-                'bg-[#0A7CFF] text-white rounded-tl-3xl rounded-tr-2xl rounded-br-sm rounded-bl-3xl': isSelf,
-                'bg-[#F0F0F0] opacity-80 backdrop-filter backdrop-blur-sm rounded-tl-2xl rounded-tr-3xl rounded-br-3xl rounded-bl-sm': !isSelf
+                'bg-[#0A7CFF] bg-opacity-80 border  text-white rounded-tl-3xl rounded-tr-2xl rounded-br-sm rounded-bl-3xl': isSelf,
+                'bg-[#F0F0F0] bg-opacity-60 border opacity-80 backdrop-filter backdrop-blur-sm rounded-tl-2xl rounded-tr-3xl rounded-br-3xl rounded-bl-sm': !isSelf
               })}
             >
               <p>{message.msg}</p>

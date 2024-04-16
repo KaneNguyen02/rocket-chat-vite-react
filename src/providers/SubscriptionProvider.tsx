@@ -1,30 +1,34 @@
 import { useEffect, ReactNode, useState } from 'react'
 import { sdk } from '../services/SDK'
-import { roomManager } from '../utils/RoomManager'
+import { RoomManager } from '../utils/RoomManager'
+import { useMessages } from './MessageProvider'
+// import { roomManager } from '../utils/RoomManager'
 
 function SubscriptionProvider({ children }: any): ReactNode {
   const [ready, setReady] = useState(false)
   const roomId = 'GENERAL'
-
+  const { listMessage, updateMessages, getMessageScroll, replaceMessageEdit, deleteMessageItem, setListMessage } = useMessages()
+  
   useEffect(() => {
-    roomManager.subscribe(roomId).then()
-    const subscribeRoom = async () => {
+    // const roomManager = new RoomManager(updateMessages, roomId, replaceMessageEdit)
+    // roomManager.subscribe().then(()=>setReady(true))
+    // const subscribeRoom = async () => {
 
-      // if (sdk.currentSubscription?._id === roomId) {
-      //   console.log('subcribe---------')
-      //   return
-      // }
-      if (sdk.currentSubscription) {
-        setReady(true)
-        return
-      }
+    //   // if (sdk.currentSubscription?._id === roomId) {
+    //   //   console.log('subcribe---------')
+    //   //   return
+    //   // }
+    //   if (sdk.currentSubscription) {
+    //     setReady(true)
+    //     return
+    //   }
 
-      const subscription = await sdk.current.subscribeRoom(roomId)
-      sdk.currentSubscription = subscription
-      setReady(true)
-      console.log('🚀 ~ subscribeRoom ~ sdk.currentSubscription:', sdk.currentSubscription)
-    }
-    subscribeRoom()
+    //   const subscription = await sdk.current.subscribeRoom(roomId)
+    //   sdk.currentSubscription = subscription
+    //   setReady(true)
+    //   console.log('🚀 ~ subscribeRoom ~ sdk.currentSubscription:', sdk.currentSubscription)
+    // }
+    // subscribeRoom()
   }, [])
 
   if (!ready) {
