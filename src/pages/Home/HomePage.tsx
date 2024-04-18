@@ -2,32 +2,37 @@ import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react'
 import InputMessage from '../../components/InputMessage/InputMessage'
 import { sdk } from '../../services/SDK'
 import StorageService from '../../utils/storage'
-
+import { IoClose, IoPeopleOutline, IoSearch } from 'react-icons/io5'
 import { useMessages } from '../../providers/MessageProvider'
 import { RoomManager } from '../../utils/RoomManager'
 import MessageItem from '../../components/MessageItem/MessageItem'
 import api, { API_HOST_URL } from '../../api/axiosInstance'
-import { AxiosResponse } from 'axios'
-import { notifyMessage } from '../../utils/notify'
-
-enum ScrollState {
-  LOAD_MORE = 0,
-  SENT = 1
-}
+import clsx from 'clsx'
+import { useTheme } from '../../providers/ThemeProvider'
+import Members from '../../components/Members/Members'
 
 const HomePage = () => {
-  const { listMessage, updateMessages, getMessageScroll, replaceMessageEdit, deleteMessageItem, setListMessage } = useMessages()
+  const {
+    listMessage,
+    updateMessages,
+    getMessageScroll,
+    replaceMessageEdit,
+    deleteMessageItem,
+    setListMessage,
+    isNewMessage,
+    setIsNewMessage
+  } = useMessages()
   const userId = StorageService.get('id')
   const [inputMessage, setInputMessage] = useState('')
 
   const [isEditMs, setIsEditMs] = useState<boolean>(false)
   const [messageSelected, setMessageSelected] = useState<string>('')
   const [oldScrollHeight, setOldScrollHeight] = useState<number>(0)
-  const [scroll, setScroll] = useState<ScrollState>(ScrollState.LOAD_MORE)
 
   const messagesEndRef = useRef<null | HTMLDivElement>(null)
   const messageContainerRef = useRef<null | HTMLDivElement>(null)
 
+  const { darkMode } = useTheme()
   const romId = 'GENERAL'
   const roomManager = new RoomManager(updateMessages, romId, replaceMessageEdit, deleteMessageItem)
 
@@ -35,13 +40,13 @@ const HomePage = () => {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView()
-    // if (scroll === ScrollState.SENT) {
-    //   messagesEndRef.current?.scrollIntoView()
-    //   setScroll(ScrollState.LOAD_MORE)
-    // }
   }
 
-  useEffect(scrollToBottom, [listMessage])
+  useEffect(() => {
+    console.log('isNewMessage', isNewMessage)
+    scrollToBottom()
+    setIsNewMessage(false)
+  }, [isNewMessage])
 
   useEffect(() => {
     console.log('.subscribe')
@@ -69,11 +74,11 @@ const HomePage = () => {
   }
 
   const handleScroll = () => {
-    // if (messageContainerRef.current?.scrollTop === 0) {
-    //   const currentScrollHeight = messageContainerRef.current?.scrollHeight
-    //   setOldScrollHeight(currentScrollHeight || 0)
-    //   loadMoreMessage()
-    // }
+    if (messageContainerRef.current?.scrollTop === 0) {
+      const currentScrollHeight = messageContainerRef.current?.scrollHeight
+      setOldScrollHeight(currentScrollHeight || 0)
+      loadMoreMessage()
+    }
   }
 
   useEffect(() => {
@@ -117,7 +122,6 @@ const HomePage = () => {
         setIsEditMs(false)
         console.log('isEdit', isEditMs)
       } else {
-        setScroll(ScrollState.SENT)
         sendMessage(inputMessage)
       }
     }
@@ -131,7 +135,6 @@ const HomePage = () => {
       updateMessage(messageSelected, inputMessage)
       setIsEditMs(false)
     } else {
-      setScroll(ScrollState.SENT)
       sendMessage(inputMessage)
     }
   }
@@ -155,8 +158,10 @@ const HomePage = () => {
   // console.log('0000', listMessage)
   // bg-[#B3C8CF]
   return (
-    <div className={'w-full h-full rounded-2xl '}>
-      <div className='rounded-2xl bg-opacity-20 bg-[url("./login-bg.png")]'>
+    <div
+      className={clsx('w-full h-full rounded-lg border-l-2 border-gray-600', { dark: darkMode }, { light: !darkMode })}
+    >
+      <div className={clsx('rounded-2xl  ')}>
         <div className='flex flex-col w-full h-full flex-shrink-0 rounded-2xl backdrop-filter backdrop-blur-lg'>
           {/* <!-- Header --> */}
           <div className='py-2 px-3 z-5 bg-gray-500 flex flex-row justify-between items-center rounded-t-xl bg-opacity-10 backdrop-filter backdrop-blur-lg'>
@@ -201,23 +206,31 @@ const HomePage = () => {
             </div>
           </div>
 
-          <div ref={messageContainerRef} className='flex flex-col overflow-x-auto mx-4 mb-4 mt-2 h-[76vh] gap-1 '>
-            {listMessage &&
-              listMessage.map((item, index, arr) => {
-                const isSameUser = item?.u.username === arr[index - 1]?.u.username
-                return (
-                  <MessageItem
-                    key={item._id}
-                    message={item}
-                    userId={userId}
-                    sameUserPrev={isSameUser}
-                    onEdit={handleEditMessage}
-                    onDelete={handleDeleteMessage}
-                  />
-                )
-              })}
+          <div className='flex flex-row '>
+            <div
+              ref={messageContainerRef}
+              className='flex flex-col grow overflow-x-auto mx-4 mb-4 mt-2 h-[76vh] gap-1 '
+            >
+              {listMessage &&
+                listMessage.map((item, index, arr) => {
+                  const isSameUser = item?.u.username === arr[index - 1]?.u.username
+                  return (
+                    <MessageItem
+                      key={item._id}
+                      message={item}
+                      userId={userId}
+                      sameUserPrev={isSameUser}
+                      onEdit={handleEditMessage}
+                      onDelete={handleDeleteMessage}
+                    />
+                  )
+                })}
 
-            <div ref={messagesEndRef} />
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* search members */}
+            <Members />
           </div>
         </div>
       </div>

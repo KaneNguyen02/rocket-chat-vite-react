@@ -64,7 +64,7 @@ const MessageItem: React.FC<IMessageItemProps> = ({ message, userId, sameUserPre
 
           <div className='relative'>
             {/* <div className='text-[12px]'>{new Date(message.ts.$date).toLocaleTimeString()}</div> */}
-            {isActive && (
+            {isSelf && isActive && (
               <div className='absolute -top-5 -left-8  px-4 py-3'>
                 <button onClick={() => setActiveDropdownId(true)} className='text-gray-500 hover:text-gray-800'>
                   ...

@@ -1,5 +1,7 @@
 import clsx from 'clsx'
+import { IoSearch } from 'react-icons/io5'
 import React from 'react'
+import { useTheme } from '../../providers/ThemeProvider'
 const listRoom = [
   {
     name: 'General',
@@ -70,14 +72,18 @@ const listRoom = [
 ]
 
 const ListConversation: React.FC = () => {
+  const { darkMode } = useTheme()
   return (
-    <div className=''>
-      <div className='py-2 px-2 bg-grey-lightest'>
+    <div className={clsx('bg-opacity-10', { dark: darkMode }, { light: !darkMode })}>
+      <div className='flex relative py-2 px-2 bg-grey-lightest items-center'>
         <input
           type='text'
-          className='w-full px-6 py-2 text-sm rounded-full border outline-blue-400 focus:outline-blue-300'
+          className='w-full px-6 py-2 text-sm rounded-full border outline-gray-600 focus:outline-gray-800 border-gray-600'
           placeholder='Search or start new chat'
         />
+        <span className='absolute right-7'>
+          <IoSearch className='text-gray-500' />
+        </span>
       </div>
 
       {/* <!-- Contacts --> */}
@@ -88,16 +94,16 @@ const ListConversation: React.FC = () => {
               <div
                 key={index}
                 className={clsx(
-                  ' px-3 flex items-center hover:bg-grey-lighter cursor-pointer hover:bg-slate-100 rounded-sm',
+                  ' px-3 flex items-center hover:bg-grey-lighter cursor-pointer hover:bg-[#2F343D] rounded-sm',
                   {
-                    'bg-slate-200': item?.active
+                    'bg-[#1F2329]': item?.active
                   }
                 )}
               >
                 <div>
                   <img className='h-12 w-12 rounded-full' src={item.imageURL} />
                 </div>
-                <div className='ml-4 flex-1 border-b border-grey-lighter py-4'>
+                <div className='ml-4 flex-1 border-b border-gray-600 py-4'>
                   <div className='flex items-bottom justify-between'>
                     <p className='text-grey-darkest'>{item.name}</p>
                     <p className='text-xs text-grey-darkest'>{item.time}</p>

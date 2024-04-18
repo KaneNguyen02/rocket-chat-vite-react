@@ -104,8 +104,8 @@ const SettingPage: React.FC = () => {
   }
 
   return (
-    <div>
-      <h2 className='font-bold text-xl'>User settings</h2>
+    <div className='flex justify-center'>
+      <h2 className='font-bold text-xl '>User settings</h2>
       <main className='w-full py-1 md:w-2/3 lg:w-3/4'>
         <div className='p-2 md:p-4'>
           <div className='w-full px-6 pb-8 mt-8 sm:max-w-xl sm:rounded-lg'>
@@ -228,7 +228,7 @@ const SettingPage: React.FC = () => {
                   <button
                     onClick={() => handleUpdateProfile()}
                     type='submit'
-                    className='text-white bg-blue-600  hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800'
+                    className='text-white bg-[#202142]   hover:bg-blue-800 focus:ring-4 focus:outline-none  font-medium rounded-xl text-sm w-full sm:w-auto px-10 py-5 text-center'
                   >
                     Save
                   </button>

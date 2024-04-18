@@ -2,15 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+.dark {
+  @apply bg-[#1F2329] text-[#e6e3e3];
+}
+
+.light {
+  @apply bg-gray-100 text-[#1F2329];
+}
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  /* color-scheme: light dark; */
-  /* color: rgba(255, 255, 255, 0.87); */
-  /* background-color: #242424; */
+  color-scheme: light dark;
+  /* color: #c1c7d0; */
+  /* color: rgba(0, 0, 10, 0.87); */
+  background-color: #1f2329;
 
   font-synthesis: none;
   /* text-rendering: optimizeLegibility;
@@ -18,3 +26,7 @@
   -moz-osx-font-smoothing: grayscale; */
 }
 
+body {
+  color: var(--text-color);
+  background-color: var(--bg-color);
+}

@@ -9,6 +9,8 @@ type MessageContextType = {
   replaceMessageEdit: (newMessage: IMessage) => void
   deleteMessageItem: (mId: string) => void
   setListMessage: React.Dispatch<React.SetStateAction<IMessage[]>>
+  setIsNewMessage: React.Dispatch<React.SetStateAction<boolean>>
+  isNewMessage: boolean
 }
 
 const MessageContext = createContext<MessageContextType | null>(null)
@@ -19,6 +21,7 @@ type MessageProviderProps = {
 
 export const MessageProvider = ({ children }: MessageProviderProps) => {
   const [listMessage, setListMessage] = useState<IMessage[]>([])
+  const [isNewMessage, setIsNewMessage] = useState<boolean>(false)
 
   useEffect(() => {
     const getHistory = async () => {
@@ -33,6 +36,7 @@ export const MessageProvider = ({ children }: MessageProviderProps) => {
 
   const updateMessages = (newMessage: IMessage) => {
     setListMessage((prevMessages) => [...prevMessages, newMessage])
+    setIsNewMessage(true)
   }
 
   const replaceMessageEdit = useCallback(
@@ -67,7 +71,7 @@ export const MessageProvider = ({ children }: MessageProviderProps) => {
 
   return (
     <MessageContext.Provider
-      value={{ listMessage, updateMessages, getMessageScroll, replaceMessageEdit, deleteMessageItem, setListMessage }}
+      value={{ listMessage, updateMessages, getMessageScroll, replaceMessageEdit, deleteMessageItem, setListMessage, isNewMessage, setIsNewMessage }}
     >
       {children}
     </MessageContext.Provider>

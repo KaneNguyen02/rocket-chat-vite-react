@@ -147,7 +147,7 @@ export class RoomManager {
 
   updateListMessageDel(mIdDel: any, index: number) {
     this.queueDel.splice(index, 1)
-    notifyMessage(mIdDel._id)
+    notifyMessage(`Deleted ${mIdDel._id}`)
     this.deleteMessageItem(mIdDel._id)
   }
 }

@@ -40,7 +40,7 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
     }
   }, [token, sdk.current, sdk.currentUser, setIsLogin])
 
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading) return  <div className='flex h-screen justify-center items-center'><img src="./loading.svg" alt="loading" className='h-52' /></div>
 
   if (!isLogin) {
     // return navigate('/sign-in')
