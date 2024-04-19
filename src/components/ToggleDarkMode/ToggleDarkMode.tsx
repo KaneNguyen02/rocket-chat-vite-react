@@ -7,7 +7,7 @@ interface ToggleDarkModeProps {
 
 const ToggleDarkMode: React.FC<ToggleDarkModeProps> = ({ isDarkMode, toggleDarkMode }) => {
   return (
-    <div className='cursor-pointer' onClick={toggleDarkMode}>
+    <div className='cursor-pointer p-4' onClick={toggleDarkMode}>
       <svg
         className={isDarkMode ? 'hidden dark:block' : 'dark:hidden'}
         width='16'

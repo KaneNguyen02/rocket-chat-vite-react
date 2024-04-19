@@ -39,12 +39,16 @@ const Header = () => {
       >
         <div className='flex overflow-hidden ml-6'>
           <Link to='/'>
-            <img className='w-40 h-16 object-cover' src='/logo.png' alt='logo' />
+            <img
+              className={clsx({ 'w-40 h-16 object-cover': !darkMode })}
+              src={darkMode ? '/logo.svg' : '/logo.png'}
+              alt='logo'
+            />
           </Link>
         </div>
 
         <div className='flex gap-10 items-center'>
-          <div>
+          <div className='p-4'>
             <ToggleDarkMode isDarkMode={darkMode} toggleDarkMode={toggleDarkMode} />
           </div>
           <div className='mr-6' onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>

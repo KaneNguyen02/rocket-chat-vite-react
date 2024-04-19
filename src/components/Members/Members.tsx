@@ -2,6 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react'
 import { IoClose, IoPeopleOutline, IoSearch } from 'react-icons/io5'
 import api, { API_HOST_URL } from '../../api/axiosInstance'
 import { HiOutlineDotsVertical } from 'react-icons/hi'
+import clsx from 'clsx'
 
 interface IMember {
   _id: string
@@ -13,7 +14,7 @@ interface IMember {
   avatarETag: string
 }
 
-export const Members = () => {
+export const Members: React.FC<{ onClose: () => void; darkMode: boolean }> = ({ onClose, darkMode }) => {
   const [optionSelected, setOptionSelected] = useState('All')
   const [inputValue, setInputValue] = useState('')
   const [members, setMembers] = useState<IMember[]>([])
@@ -50,7 +51,7 @@ export const Members = () => {
     setMembersFilter([...searchMembers])
   }
   return (
-    <div>
+    <div className='border-l-gray-900 border-l-2'>
       <div className='basis-1/3 shrink'>
         <div className='flex flex-col'>
           <div className='flex justify-between border border-l-0 border-r-0 border-gray-600 p-4'>
@@ -60,7 +61,7 @@ export const Members = () => {
               </span>
               <div className='font-bold'>Members</div>
             </div>
-            <IoClose className='size-6' />
+            <IoClose onClick={() => onClose()} className='size-6' />
           </div>
 
           <div className='flex p-4 pb-0 gap-5 justify-between'>
@@ -68,7 +69,13 @@ export const Members = () => {
               <div>
                 <input
                   type='text'
-                  className='w-full px-6 py-2 text-sm rounded-md border outline-blue-400 bg-[#2f343d] text-[#f0f0f0]'
+                  className={clsx(
+                    'w-full px-6 py-2 text-sm rounded-md border outline-blue-400 bg-[#2f343d] text-[#f0f0f0]',
+                    {
+                      'bg-[#2F343D] text-[#f0f0f0]': darkMode
+                    },
+                    { 'bg-gray-200 text-[#2F343D]': !darkMode }
+                  )}
                   placeholder='Search by username'
                   value={inputValue}
                   onChange={handleSearch}
@@ -82,7 +89,13 @@ export const Members = () => {
             <div className='mb-2 sm:mb-6 basis-1/3'>
               <select
                 id='statusType'
-                className=' border bg-[#2f343d] text-sm text-[#f0f0f0] rounded-md block w-full p-2.5 '
+                className={clsx(
+                  'border bg-[#2f343d] text-sm text-[#f0f0f0] rounded-md block w-full p-2.5',
+                  {
+                    'bg-[#2F343D] text-[#f0f0f0]': darkMode
+                  },
+                  { 'bg-gray-200 text-[#2F343D]': !darkMode }
+                )}
                 value={optionSelected}
                 onChange={(e) => handleChangeOption(e)}
                 required

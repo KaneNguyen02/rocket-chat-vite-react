@@ -78,7 +78,10 @@ const ListConversation: React.FC = () => {
       <div className='flex relative py-2 px-2 bg-grey-lightest items-center'>
         <input
           type='text'
-          className='w-full px-6 py-2 text-sm rounded-full border outline-gray-600 focus:outline-gray-800 border-gray-600'
+          className={clsx(
+            'w-full px-6 py-2 text-sm rounded-xl border outline-gray-600 focus:outline-gray-800 border-gray-600',
+            { 'bg-gray-300': !darkMode }
+          )}
           placeholder='Search or start new chat'
         />
         <span className='absolute right-7'>
@@ -94,9 +97,16 @@ const ListConversation: React.FC = () => {
               <div
                 key={index}
                 className={clsx(
-                  ' px-3 flex items-center hover:bg-grey-lighter cursor-pointer hover:bg-[#2F343D] rounded-sm',
+                  ' px-3 flex items-center hover:bg-grey-lighter cursor-pointer  rounded-sm',
                   {
-                    'bg-[#1F2329]': item?.active
+                    'bg-[#1F2329]': item?.active && darkMode
+                  },
+                  { 'bg-[#b3b2b2]': item?.active && !darkMode },
+                  {
+                    'hover:bg-[#2F343D]': darkMode
+                  },
+                  {
+                    'hover:bg-[#939494]': !darkMode
                   }
                 )}
               >
